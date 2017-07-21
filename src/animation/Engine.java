@@ -2,12 +2,12 @@ package animation;
 
 import animation.server.SocketServer;
 
-public class ParcelRouter {
+public class Engine {
 
 	private Interpreter interpreter;
 	private SocketServer server;
 	
-	public ParcelRouter() {
+	public Engine() {
 		interpreter = new Interpreter();
 		server = new SocketServer();
 		server.setInterpreter(interpreter);
@@ -19,7 +19,7 @@ public class ParcelRouter {
 	}
 
 	public static void main(String[] args) {
-		new ParcelRouter().play();
+		new Engine().play();
 	}
 
 }

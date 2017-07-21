@@ -18,7 +18,6 @@ import java.awt.geom.Rectangle2D;
 import javax.swing.JFrame;
 
 import animation.model.Model;
-import animation.model.Stage;
 
 public class View extends JFrame {
 
