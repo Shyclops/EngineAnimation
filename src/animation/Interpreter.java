@@ -1,5 +1,8 @@
 package animation;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
@@ -7,6 +10,7 @@ import java.util.TimerTask;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
+import javax.imageio.ImageIO;
 
 import animation.model.Model;
 import animation.view.View;
@@ -16,7 +20,7 @@ public class Interpreter extends Thread {
 
 	private BlockingQueue<String> queue  = new PriorityBlockingQueue<String>();
 	private View view;
-	boolean debug = true;
+	boolean debug = false;
 	
 	Model model = new Model();
 	
@@ -48,12 +52,12 @@ public class Interpreter extends Thread {
     	
     	while ((event = queue.poll()) != null) {
     		
-    		if (debug)
+    		if (debug){
     			System.out.println(event);
-			
+    		}
 			String[] fields = event.split("[|]");
-
-    		if (fields.length != 5) {
+			
+    		if (fields.length < 7) {
     			System.err.println("malformed event");
     			continue;
     		}
@@ -65,13 +69,6 @@ public class Interpreter extends Thread {
     			String[] keyValue = param.split(":");
     			params.put(keyValue[0], keyValue[1]);
     		}
-    		   		
-    		int x = 0, 
-    			y = 0,
-    			r = 0,
-    			g = 0,
-    			b = 0;
-    		
     		
 		}
     	view.repaint();
