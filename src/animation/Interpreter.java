@@ -1,8 +1,5 @@
 package animation;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
@@ -10,16 +7,15 @@ import java.util.TimerTask;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
-import javax.imageio.ImageIO;
-
 import animation.model.Model;
 import animation.view.View;
-
 
 public class Interpreter extends Thread {
 
 	private BlockingQueue<String> queue  = new PriorityBlockingQueue<String>();
+	
 	private View view;
+	
 	boolean debug = false;
 	
 	Model model = new Model();
@@ -33,7 +29,6 @@ public class Interpreter extends Thread {
 		super.run();	
 		
 		view = new View(model);
-		view.repaint();
 			
 		Timer timer = new Timer();
     	TimerTask myTask = new TimerTask() {
@@ -52,22 +47,33 @@ public class Interpreter extends Thread {
     	
     	while ((event = queue.poll()) != null) {
     		
-    		if (debug){
+    		if (debug)
     			System.out.println(event);
-    		}
-			String[] fields = event.split("[|]");
 			
-    		if (fields.length < 7) {
-    			System.err.println("malformed event");
+			String[] fields = event.split("[|]");
+
+    		if (fields.length < 8	) {
+    			//System.err.println("malformed event");
     			continue;
     		}
     		
-    		String[] p = fields[6].split(";");
+    		String sourceName = fields[1];
+    		String state = fields[2];
+    		String eventSource = fields[3];
+    		String eventKind= fields[4];
+    		
+    		String[] p = fields[7].split(";");
     		Map<String, String> params = new HashMap<String, String> ();
     		
     		for (String param : p) {
     			String[] keyValue = param.split(":");
     			params.put(keyValue[0], keyValue[1]);
+    		}
+    		String command = params.get("cmd");
+
+    		if (command.equals("update")){
+    			System.out.println("updated");
+    			view.repaint();
     		}
     		
 		}
@@ -80,3 +86,4 @@ public class Interpreter extends Thread {
 			System.out.println("Impossible to insert into queue");
 	}
 }
+
