@@ -1,12 +1,14 @@
 package animation.view;
 
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.HeadlessException;
 import java.awt.Image;
+import java.awt.RenderingHints;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
@@ -88,7 +90,6 @@ public class View extends JFrame {
 	
 	@Override
 	public void paint(Graphics g) {
-		
 		if (bufferGraphics == null)
 			return;
 		
@@ -98,14 +99,35 @@ public class View extends JFrame {
         
 		BufferedImage img = null;
 		try {
-		    img = ImageIO.read(new File("/home/cwon/Dropbox/ws/Engine_CDTProject/src/external_resources/map.png"));
+		    img = ImageIO.read(new File("/home/cwon/git/C-_EngineCode/src/external_resources/map.png"));
+		    int type = img.getType() == 0? BufferedImage.TYPE_INT_ARGB : img.getType();
+		    img = resizeImageWithHint(img, type);
+		    
 		} catch (IOException e) {
 			System.out.println("error");
 		}
     	
     	// draw the offscreen image to the screen like a normal image.
-        g.drawImage(img,0,0, 550, 550,this);
+        g.drawImage(img,0,0,480,480,this);
        
 	}
+	
+	private static BufferedImage resizeImageWithHint(BufferedImage originalImage, int type){
+
+		BufferedImage resizedImage = new BufferedImage(480, 480, type);
+		Graphics2D g = resizedImage.createGraphics();
+		g.drawImage(originalImage, 0, 0, 480, 480, null);
+		g.dispose();
+		g.setComposite(AlphaComposite.Src);
+
+		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+		RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+		g.setRenderingHint(RenderingHints.KEY_RENDERING,
+		RenderingHints.VALUE_RENDER_QUALITY);
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+		RenderingHints.VALUE_ANTIALIAS_ON);
+
+		return resizedImage;
+	    }
 
 }
